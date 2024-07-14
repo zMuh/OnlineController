@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Arrow Direction Website</title>
+  <style>
+    .arrow-button {
+      font-size: 50px;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border: none;
+      cursor: pointer;
+    }
+
+    #direction-display {
+      font-size: 30px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+   
+  <div style="display: flex; justify-content: center; margin-top: 50px;">
+    <button class="arrow-button" onclick="saveDirection('up')">&#8593;</button>
+  </div>
+  <div style="display: flex; justify-content: center; margin-top: 20px;">
+    <button class="arrow-button" onclick="saveDirection('left')">&#8592;</button>
+    <button class="arrow-button" onclick="saveDirection('down')">&#8595;</button>
+    <button class="arrow-button" onclick="saveDirection('right')">&#8594;</button>
+    
+  </div>
+  <div id="direction-display"></div>
+
+  <!-- Include the Supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script>
+    // Initialize the Supabase client
+    const { createClient } = window.supabase
+    const supabase = createClient(
+      'https://qjfjwabbsvnsyhceamtl.supabase.co',
+      'token')
+
+    async function saveDirection(direction) {
+      try {
+        // Insert the direction into the Supabase database
+        const { error } = await supabase
+          .from('clicks')
+          .insert({ direction: direction})
+
+        if (error) {
+          console.error('Error saving direction:', error)
+          document.getElementById("direction-display").textContent = "Error saving click. Please try again."
+        } else {
+          document.getElementById("direction-display").textContent = `You clicked the ${direction} arrow.`;
+        }
+      } catch (error) {
+        console.error('Error saving direction:', error)
+        document.getElementById("direction-display").textContent = "Error saving click. Please try again."
+      }
+    }
+  </script>
+</body>
+</html>
